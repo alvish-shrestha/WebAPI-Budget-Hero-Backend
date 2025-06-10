@@ -1,12 +1,27 @@
 require("dotenv").config()
 
 const express = require("express")
+const connectDB = require("./config/db")
+const userRoutes = require("./routes/userRoutes")
+const adminUserRoutes = require("./routes/admin/userRouteAdmin")
+const path = require("path")
 const app = express()
 
-app.get("/", 
-    (req, res) => {
-        return res.status(200).send("Hello World")
-})
+const cors = require("cors")
+let corsOptions = {
+    origin: "*" // can provide ist of domain
+}
+app.use(cors(corsOptions))
+
+// connection implementation
+connectDB()
+
+app.use(express.json()) // accept json in request
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+
+// implement routes here
+app.use("/api/auth", userRoutes)
+app.use("/api/admin/user", adminUserRoutes)
 
 const PORT = process.env.PORT
 app.listen(

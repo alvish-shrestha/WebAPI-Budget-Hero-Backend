@@ -12,7 +12,7 @@ const connectDB = async () => {
         )
         console.log("Mongodb connected");
     } catch (err) {
-        console.log("DB error", err);
+        console.log("Database error", err);
     }
 }
 module.exports = connectDB
