@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt") // maintain hashing for passwords
 const jwt = require("jsonwebtoken")
 
 exports.registerUser = async (req, res) => {
-    const { username, email, firstName, lastName, password, role } = req.body
+    const { username, email, password, confirmPassword, role } = req.body
 
-    if (!username || !email || !firstName || !lastName || !password) {
+    if (!username || !email || !password || !confirmPassword) {
         return res.status(400).json(
             {
                 "success": false,
@@ -35,9 +35,8 @@ exports.registerUser = async (req, res) => {
             {
                 username: username,
                 email: email,
-                firstName: firstName,
-                lastName: lastName,
                 password: hashedPassword,
+                confirmPassword: hashedPassword,
                 role: role
             }
         )
@@ -101,8 +100,6 @@ exports.loginUser = async (req, res) => {
             "_id": getUser._id,
             "email": getUser.email,
             "username": getUser.username,
-            "firstName": getUser.firstName,
-            "lastName": getUser.lastName
         }
         const token = jwt.sign(payload, process.env.SECRET, {expiresIn: "7d"})
         return res.status(200).json(
