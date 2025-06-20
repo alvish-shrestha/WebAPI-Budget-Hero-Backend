@@ -5,6 +5,7 @@ const connectDB = require("./config/db")
 const userRoutes = require("./routes/userRoutes")
 const adminUserRoutes = require("./routes/admin/userRouteAdmin")
 const adminSystemActivityRoute = require("./routes/admin/systemActivityRouteAdmin")
+const adminFeedbackRoute = require("./routes/admin/feedbackAdmin")
 const path = require("path")
 const app = express()
 
@@ -24,5 +25,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.use("/api/auth", userRoutes)
 app.use("/api/admin/user", adminUserRoutes)
 app.use("/api/admin/system-activity", adminSystemActivityRoute)
+app.use("/api/admin/feedback", adminFeedbackRoute)
 
 module.exports = app

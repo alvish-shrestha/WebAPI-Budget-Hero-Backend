@@ -5,6 +5,6 @@ const PORT = process.env.PORT
 app.listen(
     PORT,
     () => {
-        console.log("Server running");
+        console.log("Server running".white.underline.bold);
     }
 )
