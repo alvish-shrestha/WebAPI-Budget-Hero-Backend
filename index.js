@@ -4,6 +4,7 @@ const express = require("express")
 const connectDB = require("./config/db")
 const userRoutes = require("./routes/userRoutes")
 const adminUserRoutes = require("./routes/admin/userRouteAdmin")
+const adminSystemActivityRoute = require("./routes/admin/systemActivityRouteAdmin")
 const path = require("path")
 const app = express()
 
@@ -22,11 +23,6 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 // implement routes here
 app.use("/api/auth", userRoutes)
 app.use("/api/admin/user", adminUserRoutes)
+app.use("/api/admin/system-activity", adminSystemActivityRoute)
 
-const PORT = process.env.PORT
-app.listen(
-    PORT,
-    () => {
-        console.log("Server running");
-    }
-)
+module.exports = app

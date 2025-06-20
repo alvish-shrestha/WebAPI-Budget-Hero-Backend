@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+require("colors")
 
 const CONNECTION_STRING = process.env.MONGODB_URI
 const connectDB = async () => {
@@ -10,9 +11,9 @@ const connectDB = async () => {
                 useUnifiedTopology: true
             }
         )
-        console.log("Mongodb connected");
+        console.log("Mongodb connected".white.underline.bold);
     } catch (err) {
-        console.log("Database error", err);
+        console.log("Database error".red.underline.bold);
     }
 }
 module.exports = connectDB
