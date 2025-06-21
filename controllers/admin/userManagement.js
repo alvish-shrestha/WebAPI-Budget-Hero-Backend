@@ -39,7 +39,7 @@ exports.createUser = async (req, res) => {
                 firstName: firstName,
                 lastName: lastName,
                 password: hashedPassword,
-                filepath: filepath
+                confirmPassword: hashedPassword
             }
         )
         await newUser.save()
@@ -103,7 +103,7 @@ exports.getOneUser = async (req, res) => {
 
 // update
 exports.updateOneUser = async (req, res) => {
-    const { username, email } = req.body
+    const { username, email, role } = req.body
     const _id = req.params.id
     try {
         const user = await User.updateOne(
@@ -113,7 +113,8 @@ exports.updateOneUser = async (req, res) => {
             {
                 $set: {
                     "username": username,
-                    "email": email
+                    "email": email,
+                    "role": role
                 }
             }
         )

@@ -6,6 +6,7 @@ const userRoutes = require("./routes/userRoutes")
 const adminUserRoutes = require("./routes/admin/userRouteAdmin")
 const adminSystemActivityRoute = require("./routes/admin/systemActivityRouteAdmin")
 const adminFeedbackRoute = require("./routes/admin/feedbackAdmin")
+const adminDashboardRoute = require("./routes/admin/dashboardAdmin")
 const path = require("path")
 const app = express()
 
@@ -23,6 +24,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
 // implement routes here
 app.use("/api/auth", userRoutes)
+app.use("/api/admin", adminDashboardRoute)
 app.use("/api/admin/user", adminUserRoutes)
 app.use("/api/admin/system-activity", adminSystemActivityRoute)
 app.use("/api/admin/feedback", adminFeedbackRoute)
