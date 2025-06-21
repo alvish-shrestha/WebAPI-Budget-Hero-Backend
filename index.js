@@ -12,17 +12,15 @@ const app = express()
 
 const cors = require("cors")
 let corsOptions = {
-    origin: "*" // can provide ist of domain
+    origin: "*" 
 }
 app.use(cors(corsOptions))
 
-// connection implementation
 connectDB()
 
-app.use(express.json()) // accept json in request
+app.use(express.json())
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
-// implement routes here
 app.use("/api/auth", userRoutes)
 app.use("/api/admin", adminDashboardRoute)
 app.use("/api/admin/user", adminUserRoutes)
