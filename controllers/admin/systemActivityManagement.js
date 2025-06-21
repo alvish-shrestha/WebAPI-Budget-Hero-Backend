@@ -1,6 +1,5 @@
 const SystemActivity = require("../../models/SystemActivity");
 
-// Fetch all activity records (e.g., for 7/30-day trends)
 exports.getAllActivities = async (req, res) => {
     try {
         const activities = await SystemActivity.find().sort({ date: -1 });
@@ -18,7 +17,6 @@ exports.getAllActivities = async (req, res) => {
     }
 };
 
-// Fetch the most recent system activity (today or last available)
 exports.getLatestActivity = async (req, res) => {
     try {
         const latest = await SystemActivity.findOne().sort({ date: -1 });
