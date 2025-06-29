@@ -4,9 +4,10 @@ const bcrypt = require("bcrypt")
 
 // Create
 exports.createUser = async (req, res) => {
-    const { username, email, firstName, lastName, password } = req.body
+    console.log("Received body:", req.body);
+    const { username, email, password } = req.body
     // validation
-    if (!username || !email || !firstName || !lastName || !password) {
+    if (!username || !email || !password) {
         return res.status(400).json(
             {
                 "success": false,
@@ -36,10 +37,7 @@ exports.createUser = async (req, res) => {
             {
                 username: username,
                 email: email,
-                firstName: firstName,
-                lastName: lastName,
                 password: hashedPassword,
-                confirmPassword: hashedPassword
             }
         )
         await newUser.save()

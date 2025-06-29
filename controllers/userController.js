@@ -15,17 +15,31 @@ exports.registerUser = async (req, res) => {
         )
     }
 
+    if (password !== confirmPassword) {
+        return res.status(400).json(
+            {
+                "success": false,
+                "message": "Passwords do not match"
+            }
+        )
+    }
+
     try {
         const existingUser = await User.findOne(
             {
-                $or: [{ username: username }, { email: email }]
+                $or: 
+                    [
+                        { username: username },
+                        { email: email }
+                    ]
             }
         )
 
         if (existingUser) {
             return res.status(400).json(
                 {
-                    "success": false, "message": "User exists"
+                    "success": false,
+                    "message": "User exists"
                 }
             )
         }
@@ -34,16 +48,36 @@ exports.registerUser = async (req, res) => {
 
         const newUser = new User(
             {
-                username: username,
-                email: email,
+                username: username.toLowerCase(),
+                email: email.toLowerCase(),
                 password: hashedPassword,
-                confirmPassword: hashedPassword,
-                role: role
+                role: role || "User"
             }
         )
-        
+
         // save the user data
         await newUser.save()
+        const mailOptions = {
+            from: `"Budget Hero" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: "Welcome to Budget Hero!",
+            html: `
+                <h2>Hi ${username},</h2>
+                <p>Welcome to <strong>Budget Hero</strong>! 🎉</p>
+                <p>We’re excited to help you take control of your finances. Start tracking your expenses, saving money, and becoming your own budget hero today!</p>
+                <br />
+                <p>If you have any questions, feel free to reply to this email.</p>
+                <p>Best regards,<br />The Budget Hero Team</p>
+            `,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.error("Error sending welcome email:", err);
+            } else {
+                console.log("Welcome email sent:", info.response);
+            }
+        });
         return res.status(201).json(
             {
                 "success": true,
@@ -102,7 +136,7 @@ exports.loginUser = async (req, res) => {
             "email": getUser.email,
             "username": getUser.username,
         }
-        const token = jwt.sign(payload, process.env.SECRET, {expiresIn: "7d"})
+        const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "7d" })
         return res.status(200).json(
             {
                 "success": true,
@@ -134,7 +168,7 @@ const transporter = nodemailer.createTransport(
 exports.sendResetLink = async (req, res) => {
     const { email } = req.body
     try {
-        const user = await User.findOne({email})
+        const user = await User.findOne({ email })
         if (!user) return res.status(404).json({
             success: false,
             message: "User not found"

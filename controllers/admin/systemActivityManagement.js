@@ -1,4 +1,4 @@
-const SystemActivity = require("../../models/SystemActivity");
+const SystemActivity = require("../../models/admin/SystemActivity");
 
 exports.getAllActivities = async (req, res) => {
     try {
