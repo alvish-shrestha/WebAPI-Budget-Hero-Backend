@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ExpenseSchema = new mongoose.Schema(
+const IncomeSchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +20,7 @@ const ExpenseSchema = new mongoose.Schema(
         category: {
             type: String,
             required: true,
-            enum: ["Food", "Transport", "Entertainment", "Utilities", "Health", "Other"],
+            enum: ["Received", "Allowance", "Petty Cash", "Bonus", "Salary", "Other"]
         },
         account: {
             type: String,
@@ -47,5 +47,5 @@ const ExpenseSchema = new mongoose.Schema(
 )
 
 module.exports = mongoose.model(
-    "Expense", ExpenseSchema
+    "Income", IncomeSchema
 )
