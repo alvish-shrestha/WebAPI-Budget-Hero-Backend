@@ -24,6 +24,7 @@ connectDB()
 
 app.use(express.json())
 
+// ============ User ============
 app.use("/api/auth", userRoutes)
 
 app.use("/api/admin", adminDashboardRoutes)
