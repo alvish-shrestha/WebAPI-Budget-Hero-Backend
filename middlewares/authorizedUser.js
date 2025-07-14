@@ -28,7 +28,7 @@ exports.authenticateUser = async (req, res, next) => {
             )
         }
         req.user = user
-        next() // continue to next function
+        next()
     } catch (err) {
         return res.status(500).json(
             {
