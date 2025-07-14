@@ -33,7 +33,7 @@ app.use("/api/admin/user", adminUserRoutes)
 app.use("/api/admin/system-activity", adminSystemActivityRoutes)
 app.use("/api/admin/feedback", adminFeedbackRoutes)
 
-// =========== Transactions ========
+// ========== Transactions ========
 app.use("/api/transactions", transactionRoutes)
 
 module.exports = app
