@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema(
         }
     },
     {
-        timestamps: true  // userSchema batw halda timestamp pauxa katy bela create katy bela update gareko grxa
+        timestamps: true
     }
 )
 
