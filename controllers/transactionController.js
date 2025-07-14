@@ -1,6 +1,4 @@
 const Transaction = require("../models/Transaction")
-const jwt = require("jsonwebtoken")
-const nodemailer = require("nodemailer")
 
 exports.addTransaction = async (req, res) => {
     try {
