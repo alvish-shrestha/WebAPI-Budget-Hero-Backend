@@ -11,7 +11,7 @@ const connectDB = async () => {
                 useUnifiedTopology: true
             }
         )
-        console.log("Mongodb connected".white.underline.bold);
+        console.log(`Mongodb connected: ${mongoose.connection.name}`.white.underline.bold);
     } catch (err) {
         console.log("Database error".red.underline.bold);
     }

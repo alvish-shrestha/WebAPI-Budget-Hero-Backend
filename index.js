@@ -13,6 +13,8 @@ const expenseRoutes = require("./routes/expenseRoutes")
 const incomeRoutes = require("./routes/incomeRoutes")
 const totalBalanceRoutes = require("./routes/totalBalanceRoutes")
 
+const transactionRoutes = require("./routes/transactionRoutes")
+
 const statsRoutes = require("./routes/statsRoutes")
 
 const path = require("path")
@@ -36,9 +38,11 @@ app.use("/api/admin/user", adminUserRoutes)
 app.use("/api/admin/system-activity", adminSystemActivityRoutes)
 app.use("/api/admin/feedback", adminFeedbackRoutes)
 
-app.use("/api/expenses", expenseRoutes)
-app.use("/api/incomes", incomeRoutes)
-app.use("/api/balance", totalBalanceRoutes)
+// app.use("/api/expenses", expenseRoutes)
+// app.use("/api/incomes", incomeRoutes)
+// app.use("/api/balance", totalBalanceRoutes)
+
+app.use("/api/transactions", transactionRoutes)
 
 app.use("/api/stats", statsRoutes)
 

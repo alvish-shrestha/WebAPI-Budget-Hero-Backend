@@ -6,6 +6,8 @@ const nodemailer = require("nodemailer")
 exports.registerUser = async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body
 
+    console.log(req.body);
+
     if (!username || !email || !password || !confirmPassword) {
         return res.status(400).json(
             {
@@ -146,7 +148,7 @@ exports.loginUser = async (req, res) => {
             }
         )
     } catch (err) {
-        return res.status(400).json(
+        return res.status(500).json(
             {
                 "success": false,
                 "message": "Server Error"
