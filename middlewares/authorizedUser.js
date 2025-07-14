@@ -46,7 +46,7 @@ exports.isAdmin = async (req, res, next) => {
         return res.status(403).json(
             {
                 "success": false,
-                "message": "Admin privilage required"
+                "message": "Admin privilege required"
             }
         )
     }
