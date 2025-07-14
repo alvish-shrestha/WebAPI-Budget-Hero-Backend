@@ -11,7 +11,6 @@ const adminDashboardRoutes = require("./routes/admin/dashboardAdmin")
 
 const transactionRoutes = require("./routes/transactionRoutes")
 
-const path = require("path")
 const app = express()
 
 const cors = require("cors")
