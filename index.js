@@ -27,6 +27,7 @@ app.use(express.json())
 // ============ User ============
 app.use("/api/auth", userRoutes)
 
+// ========== Admin ===========
 app.use("/api/admin", adminDashboardRoutes)
 app.use("/api/admin/user", adminUserRoutes)
 app.use("/api/admin/system-activity", adminSystemActivityRoutes)
