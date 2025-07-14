@@ -20,10 +20,10 @@ const SystemActivitySchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
-        unique: true, // ensures one entry per day
+        unique: true,
     }
 }, {
-    timestamps: true  // Automatically adds createdAt and updatedAt
+    timestamps: true
 });
 
 module.exports = mongoose.model("SystemActivity", SystemActivitySchema);
