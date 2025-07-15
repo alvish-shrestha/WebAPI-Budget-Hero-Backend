@@ -75,9 +75,9 @@ exports.registerUser = async (req, res) => {
 
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) {
-                console.error("Error sending welcome email:", err);
+                // console.error("Error sending welcome email:", err);
             } else {
-                console.log("Welcome email sent:", info.response);
+                // console.log("Welcome email sent:", info.response);
             }
         });
         return res.status(201).json(
@@ -134,7 +134,7 @@ exports.loginUser = async (req, res) => {
         }
         // jwt
         const payload = {
-            "_id": getUser._id,
+            "id": getUser._id,
             "email": getUser.email,
             "username": getUser.username,
         }

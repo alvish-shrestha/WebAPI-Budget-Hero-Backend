@@ -31,7 +31,8 @@ exports.addTransaction = async (req, res) => {
         res.status(201).json(
             {
                 success: true,
-                message: "Transaction saved"
+                message: "Transaction saved",
+                data: savedTransaction,
             }
         )
     } catch (error) {

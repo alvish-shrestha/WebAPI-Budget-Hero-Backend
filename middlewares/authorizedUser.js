@@ -16,7 +16,7 @@ exports.authenticateUser = async (req, res, next) => {
         const token = authHeader.split(" ")[1] // get token after Bearer prefix
         const decoded = jwt.verify(token, process.env.SECRET)
         const user = await User.findOne({
-            "_id": decoded._id
+            "_id": decoded.id
         })
 
         if (!user) {
