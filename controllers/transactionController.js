@@ -1,47 +1,85 @@
+const User = require("../models/User")
+
 const Transaction = require("../models/Transaction")
 
 exports.addTransaction = async (req, res) => {
     try {
-        const {type, date, amount, category, account, note, description} = req.body;
+        const { type, date, amount, category, account, note, description } = req.body;
 
         if (!type || !date || !amount || !category || !account || !note) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "Missing required fields"
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields",
+            });
         }
 
-        const transaction = new Transaction(
-            {
-                type,
-                date,
-                amount,
-                category,
-                account,
-                note,
-                description,
-                userId: req.user._id,
-            }
-        )
+        const transaction = new Transaction({
+            type,
+            date,
+            amount,
+            category,
+            account,
+            note,
+            description,
+            userId: req.user._id,
+        });
 
         const savedTransaction = await transaction.save();
 
-        res.status(201).json(
-            {
-                success: true,
-                message: "Transaction saved",
-                data: savedTransaction,
-            }
-        )
+        // STREAK LOGIC
+        const user = await User.findById(req.user._id);
+
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+        const lastSaved = user.streak?.lastSavedDate
+            ? new Date(user.streak.lastSavedDate).toDateString()
+            : null;
+
+        if (lastSaved === today) {
+            // Already logged today – no change
+        } else if (lastSaved === yesterday) {
+            user.streak.current += 1;
+        } else {
+            user.streak.current = 1; // New streak
+        }
+
+        user.streak.lastSavedDate = new Date();
+
+        if (user.streak.current > user.streak.best) {
+            user.streak.best = user.streak.current;
+        }
+
+        // Award badges based on streak
+        const { current, badges } = user.streak;
+
+        if (current >= 3 && !user.badges.includes("3-Day Streak")) {
+            user.badges.push("3-Day Streak");
+        }
+
+        if (current >= 7 && !user.badges.includes("1-Week Warrior")) {
+            user.badges.push("1-Week Warrior");
+        }
+
+        if (current >= 14 && !user.badges.includes("Savings Hero")) {
+            user.badges.push("Savings Hero");
+        }
+
+        await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Transaction saved",
+            data: savedTransaction,
+            badges: user.badges,
+            streak: user.streak
+        });
     } catch (error) {
-        res.status(500).json(
-            {
-                success: false,
-                message: "Failed to add transaction", error: error.message
-            }
-        )
+        res.status(500).json({
+            success: false,
+            message: "Failed to add transaction",
+            error: error.message,
+        });
     }
 }
 

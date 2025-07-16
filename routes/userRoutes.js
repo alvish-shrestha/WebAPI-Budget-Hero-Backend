@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const { registerUser, loginUser, sendResetLink, resetPassword } = require("../controllers/userController")
+const { registerUser, loginUser, sendResetLink, resetPassword, getStreak} = require("../controllers/userController")
+const {authenticateUser} = require("../middlewares/authorizedUser");
 
 router.post(
     "/register",
@@ -10,6 +11,12 @@ router.post(
 router.post(
     "/login",
     loginUser
+)
+
+router.get(
+    "/streak",
+    authenticateUser,
+    getStreak
 )
 
 router.post(

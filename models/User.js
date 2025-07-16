@@ -19,7 +19,25 @@ const UserSchema = new mongoose.Schema(
         role: {
             type: String,
             default: "User"
-        }
+        },
+        streak: {
+            current: {
+                type: Number,
+                default: 0
+            },
+            best: {
+                type: Number,
+                default: 0
+            },
+            lastSavedDate: {
+                type: Date,
+                default: null
+            }
+        },
+        badges: {
+            type: [String],
+            default: []
+        },
     },
     {
         timestamps: true

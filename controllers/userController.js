@@ -88,6 +88,16 @@ exports.registerUser = async (req, res) => {
         )
 
     } catch (e) {
+        console.error("Registration error:", e);
+
+        if (e.code === 11000) {
+            const duplicateField = Object.keys(e.keyValue)[0]; // "username" or "email"
+            return res.status(400).json({
+                success: false,
+                message: `${duplicateField.charAt(0).toUpperCase() + duplicateField.slice(1)} already exists`
+            });
+        }
+
         return res.status(500).json(
             {
                 "success": false,
@@ -156,6 +166,31 @@ exports.loginUser = async (req, res) => {
         )
     }
 }
+
+exports.getStreak = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            streak: user.streak,
+            badges: user.badges
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Server error",
+            error: err.message
+        });
+    }
+};
 
 const transporter = nodemailer.createTransport(
     {
