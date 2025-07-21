@@ -111,7 +111,7 @@ exports.getTransaction = async (req, res) => {
 }
 
 exports.updateTransaction = async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
 
     try {
         const updatedTransaction = await Transaction.findOneAndUpdate(

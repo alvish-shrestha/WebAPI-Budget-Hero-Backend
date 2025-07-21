@@ -1,20 +1,4 @@
-const Feedback = require("../../models/admin/Feedback");
-
-// Create feedback
-exports.createFeedback = async (req, res) => {
-  try {
-    const feedback = new Feedback({
-      userId: req.user._id,
-      subject: req.body.subject,
-      message: req.body.message,
-      priority: req.body.priority,
-    });
-    const saved = await feedback.save();
-    res.status(201).json({ success: true, data: saved });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+const Feedback = require("../../models/Feedback");
 
 // Get all feedback
 exports.getAllFeedback = async (req, res) => {

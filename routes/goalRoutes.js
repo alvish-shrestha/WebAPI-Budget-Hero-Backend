@@ -1,6 +1,6 @@
 const express = require("express")
-const {authenticateUser} = require("../middlewares/authorizedUser");
-const {createGoal, getGoals, updateGoal, deleteGoal, contributeToGoal} = require("../controllers/goalController");
+const { authenticateUser } = require("../middlewares/authorizedUser");
+const { createGoal, getGoals, updateGoal, deleteGoal, contributeToGoal } = require("../controllers/goalController");
 const router = express.Router()
 
 router.post(

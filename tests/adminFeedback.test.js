@@ -2,7 +2,7 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../index");
 const User = require("../models/User");
-const Feedback = require("../models/admin/Feedback");
+const Feedback = require("../models/Feedback");
 const jwt = require("jsonwebtoken");
 
 let token;

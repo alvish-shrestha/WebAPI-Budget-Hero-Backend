@@ -29,7 +29,7 @@ exports.registerUser = async (req, res) => {
     try {
         const existingUser = await User.findOne(
             {
-                $or: 
+                $or:
                     [
                         { username: username },
                         { email: email }

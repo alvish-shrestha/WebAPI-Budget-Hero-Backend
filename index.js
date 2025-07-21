@@ -5,6 +5,8 @@ const connectDB = require("./config/db")
 
 // ================== User ===============================
 const userRoutes = require("./routes/userRoutes")
+const feedbackRoutes = require("./routes/feedbackRoutes")
+const accountInfoRoutes = require("./routes/accountInfoRoutes")
 
 // ======================= Admin =========================
 const adminUserRoutes = require("./routes/admin/userRouteAdmin")
@@ -22,7 +24,7 @@ const app = express()
 
 const cors = require("cors")
 let corsOptions = {
-    origin: "*" 
+    origin: "*"
 }
 app.use(cors(corsOptions))
 
@@ -32,6 +34,8 @@ app.use(express.json())
 
 // ============ User ============
 app.use("/api/auth", userRoutes)
+app.use("/api/userFeedback", feedbackRoutes)
+app.use("/api/accountInfo", accountInfoRoutes)
 
 // ========== Admin ===========
 app.use("/api/admin", adminDashboardRoutes)

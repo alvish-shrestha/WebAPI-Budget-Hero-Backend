@@ -1,6 +1,6 @@
 const express = require("express")
-const { addTransaction, getTransaction, updateTransaction, deleteTransaction} = require("../controllers/transactionController");
-const {authenticateUser} = require("../middlewares/authorizedUser");
+const { addTransaction, getTransaction, updateTransaction, deleteTransaction } = require("../controllers/transactionController");
+const { authenticateUser } = require("../middlewares/authorizedUser");
 const router = express.Router()
 
 router.post(
