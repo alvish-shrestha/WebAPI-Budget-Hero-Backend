@@ -4,7 +4,7 @@ const { getUserActivity } = require("../controllers/systemActivityController");
 const { authenticateUser } = require("../middlewares/authorizedUser");
 
 router.get(
-    "/my-activity",
+    "/activity",
     authenticateUser,
     getUserActivity
 );

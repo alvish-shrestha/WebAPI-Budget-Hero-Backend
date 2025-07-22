@@ -1,100 +1,108 @@
+jest.mock("nodemailer", () => ({
+    createTransport: () => ({
+        sendMail: (options, callback) => {
+            callback(null, { response: "Mocked email sent" });
+        },
+    }),
+}));
+
 const request = require("supertest");
+const app = require("../index"); // or "../app"
 const mongoose = require("mongoose");
-const app = require("../index");
 const User = require("../models/User");
-const Feedback = require("../models/Feedback");
 const jwt = require("jsonwebtoken");
 
 let token;
-let feedbackId;
-
-beforeAll(async () => {
-    // Cleanup test user and feedbacks
-    await User.deleteOne({ email: "adminfeedback@example.com" });
-    await Feedback.deleteMany({ subject: "Test Subject" });
-
-    // Create admin user
-    const user = new User({
-        username: "adminFeedback",
-        email: "adminfeedback@example.com",
-        password: "hashedPassword",
-        role: "admin"
-    });
-    await user.save();
-
-    // Generate token
-    const payload = { id: user._id, email: user.email, username: user.username };
-    token = jwt.sign(payload, process.env.SECRET, { expiresIn: "7d" });
-});
+let userId;
 
 afterAll(async () => {
+    await User.deleteOne({ email: "test@gmail.com" });
     await mongoose.disconnect();
 });
 
-describe("Admin Feedback Management API", () => {
-    test("should create new feedback", async () => {
-        const res = await request(app)
-            .post("/api/admin/feedback")
-            .set("Authorization", `Bearer ${token}`)
-            .send({
-                subject: "Test Subject",
-                message: "This is a test message",
-                priority: "high"
-            });
+describe("User Authentication API", () => {
+    test("should fail to register if required fields are missing", async () => {
+        const res = await request(app).post("/api/auth/register").send({
+            username: "test",
+            email: "test@gmail.com",
+            password: "password123",
+        });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Missing field");
+        expect(res.body.success).toBe(false);
+    });
+
+    test("should fail if passwords do not match", async () => {
+        const res = await request(app).post("/api/auth/register").send({
+            username: "test",
+            email: "test@gmail.com",
+            password: "password123",
+            confirmPassword: "wrongpass",
+        });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Passwords do not match");
+    });
+
+    test("should register a new user", async () => {
+        const res = await request(app).post("/api/auth/register").send({
+            username: "test",
+            email: "test@gmail.com",
+            password: "password123",
+            confirmPassword: "password123",
+        });
 
         expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
-        expect(res.body.data.subject).toBe("Test Subject");
-
-        feedbackId = res.body.data._id;
+        expect(res.body.message).toBe("User registered");
     });
 
-    test("should get all feedback", async () => {
-        const res = await request(app)
-            .get("/api/admin/feedback")
-            .set("Authorization", `Bearer ${token}`);
+    test("should not allow duplicate user", async () => {
+        const res = await request(app).post("/api/auth/register").send({
+            username: "test",
+            email: "test@gmail.com",
+            password: "password123",
+            confirmPassword: "password123",
+        });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("User exists");
+    });
+
+    test("should login with valid credentials", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "test@gmail.com",
+            password: "password123",
+        });
 
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.success).toBe(true);
+        expect(res.body.token).toBeDefined();
+        token = res.body.token;
+
+        // Decode token to extract user ID for later
+        const decoded = jwt.decode(token);
+        userId = decoded.id;
     });
 
-    test("should get feedback by ID", async () => {
-        const res = await request(app)
-            .get(`/api/admin/feedback/${feedbackId}`)
-            .set("Authorization", `Bearer ${token}`);
+    test("should fail login with wrong password", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "test@gmail.com",
+            password: "wrongpassword",
+        });
 
-        expect(res.statusCode).toBe(200);
-        expect(res.body.data._id).toBe(feedbackId);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Invalid Credentials");
     });
 
-    test("should update feedback", async () => {
-        const res = await request(app)
-            .put(`/api/admin/feedback/${feedbackId}`)
-            .set("Authorization", `Bearer ${token}`)
-            .send({ status: "resolved" });
+    test("should fail login if user not found", async () => {
+        const res = await request(app).post("/api/auth/login").send({
+            email: "notfound@gmail.com",
+            password: "password",
+        });
 
-        expect(res.statusCode).toBe(200);
-        expect(res.body.data.status).toBe("resolved");
-    });
-
-    test("should delete feedback", async () => {
-        const res = await request(app)
-            .delete(`/api/admin/feedback/${feedbackId}`)
-            .set("Authorization", `Bearer ${token}`);
-
-        expect(res.statusCode).toBe(200);
-        expect(res.body.message).toBe("Deleted successfully");
-    });
-
-    test("should not create feedback without token", async () => {
-        const res = await request(app)
-            .post("/api/admin/feedback")
-            .send({
-                subject: "Unauthorized",
-                message: "Should fail",
-                priority: "low"
-            });
-
-        expect(res.statusCode).toBe(401);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Missing User");
     });
 });

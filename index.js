@@ -62,13 +62,15 @@ app.use("/api/system-activity", systemActivityRoutes)
 
 // ================== Cron Job =====================
 // Run daily at 9 AM server time
-cron.schedule("0 9 * * *", async () => {
-    try {
-        await sendUpcomingGoalReminders({}, { status: () => ({ json: () => {} }) });
-        console.log("Goal reminder emails sent at 9 AM");
-    } catch (err) {
-        console.error("Error sending goal reminders:", err);
-    }
-});
+if (process.env.NODE_ENV !== "test") {
+    cron.schedule("0 9 * * *", async () => {
+        try {
+            await sendUpcomingGoalReminders({}, { status: () => ({ json: () => {} }) });
+            console.log("Goal reminder emails sent at 9 AM");
+        } catch (e) {
+            console.error("Cron job failed:", e.message);
+        }
+    });
+}
 
 module.exports = app

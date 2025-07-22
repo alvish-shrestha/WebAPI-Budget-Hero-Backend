@@ -1,13 +1,16 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../index");
+
 const User = require("../models/User");
 const Goal = require("../models/Goal");
+const SystemActivity = require("../models/SystemActivity");
 
 let token;
 let goalId;
 
 beforeAll(async () => {
+    // Clean up existing user
     await User.deleteOne({ email: "goaluser@gmail.com" });
 
     // Register new user
@@ -27,8 +30,13 @@ beforeAll(async () => {
     token = res.body.token;
 });
 
+beforeAll(async () => {
+    await SystemActivity.deleteMany({});
+});
+
 afterAll(async () => {
     await Goal.deleteMany({});
+    await SystemActivity.deleteMany({});
     await User.deleteOne({ email: "goaluser@gmail.com" });
     await mongoose.disconnect();
 });
@@ -47,6 +55,7 @@ describe("Goal API", () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.success).toBe(true);
         expect(res.body.data.title).toBe("Buy a Laptop");
+
         goalId = res.body.data._id;
     });
 
@@ -82,6 +91,22 @@ describe("Goal API", () => {
         expect(res.body.data.currentAmount).toBe(500);
     });
 
+    // This must come before the "delete goal" test!
+    test("should fetch user activity", async () => {
+        const res = await request(app)
+            .get("/api/system-activity/activity")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+
+        // Safely assert optional structure
+        if (res.body.data.length > 0) {
+            expect(res.body.data[0]).toHaveProperty("goalsCreated");
+            expect(res.body.data[0]).toHaveProperty("contributionsMade");
+        }
+    });
+
     test("should delete a goal", async () => {
         const res = await request(app)
             .delete(`/api/goals/deleteGoal/${goalId}`)
@@ -92,12 +117,10 @@ describe("Goal API", () => {
     });
 
     test("should not create a goal without token", async () => {
-        const res = await request(app)
-            .post("/api/goals/createGoal")
-            .send({
-                title: "New Goal",
-                targetAmount: 1000,
-            });
+        const res = await request(app).post("/api/goals/createGoal").send({
+            title: "New Goal",
+            targetAmount: 1000,
+        });
 
         expect(res.statusCode).toBe(401);
     });

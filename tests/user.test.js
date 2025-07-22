@@ -103,3 +103,41 @@ describe("User Authentication API", () => {
         expect(res.body.message).toBe("Missing User");
     });
 });
+
+describe("Account Info Controller", () => {
+    test("should get user profile", async () => {
+        const res = await request(app)
+            .get("/api/accountInfo/profile")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.data).toMatchObject({
+            username: "test",
+            email: "test@gmail.com",
+            role: expect.any(String),
+        });
+    });
+
+    test("should update user profile", async () => {
+        const uniqueEmail = `updated${Date.now()}@example.com`;
+        const uniqueUsername = `updatedUser${Date.now()}`;
+
+        const res = await request(app)
+            .put("/api/accountInfo/profile")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                username: uniqueUsername,
+                email: uniqueEmail,
+            });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(res.body.message).toBe("Profile updated");
+        expect(res.body.data).toMatchObject({
+            username: uniqueUsername,
+            email: uniqueEmail,
+        });
+    });
+
+});

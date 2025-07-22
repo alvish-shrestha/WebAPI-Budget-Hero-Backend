@@ -3,7 +3,7 @@ const User = require("../models/User");
 // View account info
 exports.getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("username email role");
+        const user = await User.findById(req.user._id).select("username email role");
 
         if (!user) {
             return res.status(404).json({
@@ -35,7 +35,7 @@ exports.updateUserProfile = async (req, res) => {
 
     try {
         const updatedUser = await User.findByIdAndUpdate(
-            req.user.id,
+            req.user._id,
             { username, email },
             {
                 new: true,
@@ -56,6 +56,14 @@ exports.updateUserProfile = async (req, res) => {
             data: updatedUser,
         });
     } catch (err) {
+        // Handle duplicate key error
+        if (err.code === 11000) {
+            return res.status(400).json({
+                success: false,
+                message: "Username or email already exists",
+            });
+        }
+
         console.error("Error in updateUserProfile:", err.message, err.stack);
         return res.status(500).json({
             success: false,

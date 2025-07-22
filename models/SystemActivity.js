@@ -25,7 +25,6 @@ const SystemActivityUserSchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
-        unique: true
     }
 }, {
     timestamps: true
