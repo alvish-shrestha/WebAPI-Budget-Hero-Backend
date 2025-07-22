@@ -29,6 +29,7 @@ const systemActivityRoutes = require("./routes/systemActivityRoutes")
 const app = express()
 
 const cors = require("cors")
+const {sendResetLink, resetPassword} = require("./controllers/userController");
 let corsOptions = {
     origin: "*"
 }
