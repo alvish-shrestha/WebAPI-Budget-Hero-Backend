@@ -1,4 +1,6 @@
 const Goal = require("../models/Goal");
+const {updateAdminActivity} = require("./admin/systemActivityManagement");
+const {updateUserActivity} = require("./systemActivityController");
 
 exports.createGoal = async (req, res) => {
     try {
@@ -19,6 +21,12 @@ exports.createGoal = async (req, res) => {
         });
 
         const savedGoal = await goal.save();
+        try {
+            await updateAdminActivity("goalsCreated");
+            await updateUserActivity(req.user._id, "goalsCreated");
+        } catch (activityError) {
+            console.warn("Failed to update system activity:", activityError.message);
+        }
 
         return res.status(201).json({
             success: true,
@@ -155,6 +163,12 @@ exports.contributeToGoal = async (req, res) => {
                 success: false,
                 message: "Goal not found",
             });
+        }
+
+        try {
+            await updateUserActivity(req.user._id, "contributionsMade");
+        } catch (activityError) {
+            console.warn("Failed to update user contribution activity:", activityError.message);
         }
 
         return res.status(200).json({

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getAllActivities, getLatestActivity } = require("../../controllers/admin/systemActivityManagement");
+const { getAllActivities, getLatestActivity, getSystemActivityById} = require("../../controllers/admin/systemActivityManagement");
 const { authenticateUser, isAdmin } = require("../../middlewares/authorizedUser");
 
 router.get(
@@ -15,6 +15,13 @@ router.get(
     authenticateUser,
     isAdmin,
     getLatestActivity
+);
+
+router.get(
+    "/:id",
+    authenticateUser,
+    isAdmin,
+    getSystemActivityById
 );
 
 module.exports = router;

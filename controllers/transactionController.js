@@ -1,6 +1,8 @@
 const User = require("../models/User")
 
 const Transaction = require("../models/Transaction")
+const { updateAdminActivity } = require("../controllers/admin/systemActivityManagement")
+const { updateUserActivity } = require("../controllers/systemActivityController")
 
 exports.addTransaction = async (req, res) => {
     try {
@@ -25,6 +27,13 @@ exports.addTransaction = async (req, res) => {
         });
 
         const savedTransaction = await transaction.save();
+
+        try {
+            await updateAdminActivity("entriesAdded");
+            await updateUserActivity(req.user._id, "entriesAdded");
+        } catch (e) {
+            console.warn("System activity update failed:", e.message);
+        }
 
         // STREAK LOGIC
         const user = await User.findById(req.user._id);

@@ -5,7 +5,7 @@ const app = require("../index");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const SystemActivity = require("../models/admin/SystemActivity");
+const SystemActivity = require("../models/admin/SystemActivityAdmin");
 
 let adminToken;
 let activityId;

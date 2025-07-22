@@ -1,7 +1,7 @@
 // controllers/admin/dashboardManagement.js
 const User = require('../../models/User');
 const Feedback = require('../../models/Feedback');
-const SystemActivity = require('../../models/admin/SystemActivity');
+const SystemActivity = require('../../models/admin/SystemActivityAdmin');
 
 const getDashboardStats = async (req, res) => {
   try {

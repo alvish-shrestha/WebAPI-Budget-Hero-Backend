@@ -13,10 +13,6 @@ const SystemActivitySchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    offlineDataSynced: {
-        type: Number,
-        default: 0,
-    },
     date: {
         type: Date,
         required: true,
