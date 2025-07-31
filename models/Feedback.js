@@ -31,7 +31,7 @@ const FeedbackSchema = new mongoose.Schema({
         default: Date.now,
     }
 }, {
-    timestamps: true // adds createdAt and updatedAt
+    timestamps: true
 });
 
 module.exports = mongoose.model("Feedback", FeedbackSchema);
