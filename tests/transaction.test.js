@@ -95,4 +95,24 @@ describe("Transaction API", () => {
 
         expect(res.statusCode).toBe(404);
     });
+
+    test("should return 404 for updating non-existent transaction", async () => {
+        const res = await request(app)
+            .put("/api/transactions/updateTransaction/64f1f1f1f1f1f1f1f1f1f1f1")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ amount: 1234 });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Transaction not found");
+    });
+
+    test("should return 404 for already deleted transaction", async () => {
+        const res = await request(app)
+            .delete(`/api/transactions/deleteTransaction/${transactionId}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Transaction not found");
+    });
+
 });

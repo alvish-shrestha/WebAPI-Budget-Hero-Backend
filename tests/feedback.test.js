@@ -138,4 +138,21 @@ describe("Feedback API Tests", () => {
         expect(res.body.message).toBe("Not found");
     });
 
+    test("should not allow feedback submission without token", async () => {
+        const res = await request(app)
+            .post("/api/userFeedback/create")
+            .send({ subject: "No Token", message: "Missing auth", priority: "low" });
+
+        expect(res.statusCode).toBe(401);
+    });
+
+    test("should return empty feedback if none exist", async () => {
+        const res = await request(app)
+            .get("/api/userFeedback/")
+            .set("Authorization", `Bearer ${userToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.success).toBe(true);
+        expect(Array.isArray(res.body.data)).toBe(true);
+    });
 });

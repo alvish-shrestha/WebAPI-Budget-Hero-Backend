@@ -101,4 +101,11 @@ describe("Admin System Activity API", () => {
         expect(res.body.message).toBe("Admin privilege required");
     });
 
+    test("should return 404 for non-existent activity ID", async () => {
+        const res = await request(app)
+            .get("/api/admin/system-activity/overview/64f1f1f1f1f1f1f1f1f1f1f1")
+            .set("Authorization", `Bearer ${adminToken}`);
+
+        expect(res.statusCode).toBe(404);
+    });
 });

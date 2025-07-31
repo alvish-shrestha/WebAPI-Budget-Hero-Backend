@@ -124,4 +124,14 @@ describe("Goal API", () => {
 
         expect(res.statusCode).toBe(401);
     });
+
+    test("should return 404 for updating a non-existent goal", async () => {
+        const res = await request(app)
+            .put("/api/goals/updateGoal/64f1f1f1f1f1f1f1f1f1f1f1")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ title: "Does not exist" });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Goal not found");
+    });
 });

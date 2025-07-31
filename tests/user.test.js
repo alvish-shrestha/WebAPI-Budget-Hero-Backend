@@ -140,4 +140,12 @@ describe("Account Info Controller", () => {
         });
     });
 
+    test("should fail password reset with invalid token", async () => {
+        const res = await request(app)
+            .post("/api/auth/reset-password/invalidtoken")
+            .send({ password: "any" });
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body.message).toBe("Server error / Token invalid");
+    });
 });
